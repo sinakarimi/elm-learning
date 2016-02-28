@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <script type="text/javascript" src="bingo.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <h1>My Elm Program</h1>
+    <div id="elm-app-goes-here"></div>
+  </body>
+
+  <script type="text/javascript">
+    var elmDiv = document.getElementById('elm-app-goes-here');
+    Elm.embed(Elm.Bingo, elmDiv);
+  </script>
+</html>
