@@ -32,6 +32,22 @@ initialModel =
       ]
   }
 
+-- Define a type called Action which has 2 possible values
+-- NoOp or Sort. This acts similar to an enumerated type.
+type Action = NoOp | Sort
+
+
+update action model =
+  case action of
+    NoOp ->
+      model
+    Sort ->
+      -- List.sortBy sorts the model.entries list by
+      -- it's "points" property
+      -- We can achieve the same result using an anonymous function like so:
+      -- List.sortBy (\entry -> entry.points) model.entries
+      { model | entries = List.sortBy .points model.entries }
+
 -- Define our title function
 -- We call the Html.text function and pass in an argument of "Hello, World!"
 -- The elm syntax for calling functions is <function name> <arguments> separated by a space
@@ -66,7 +82,7 @@ pageFooter =
         [ text "Google" ]
     ]
 
-entryItem : newEntry -> Html
+-- entryItem : newEntry -> Html.Html
 entryItem entry =
   li [ ]
     [ span [ class "phrase" ] [ text entry.phrase ]
@@ -85,5 +101,10 @@ view model =
     ]
 
 main =
-  view initialModel
+  -- We can re-write this:
+  -- view (update Sort initialModel)
+  -- as this (using pipe operator):
+  initialModel
+    |> update Sort
+    |> view
 
