@@ -12,6 +12,8 @@ import Html.Events exposing (..)
 -- Alternatively we can write exposing (..) to expose all functions
 import String exposing (toUpper, repeat, trimRight)
 
+import StartApp.Simple as StartApp
+
 -- newEntry is a "Record" in elm, which is very similar to
 -- an object in Javascript. The record is immutable so to change
 -- the values of a record we need to create a cloned entry e.g.
@@ -34,19 +36,30 @@ initialModel =
 
 -- Define a type called Action which has 2 possible values
 -- NoOp or Sort. This acts similar to an enumerated type.
-type Action = NoOp | Sort
-
+type Action 
+  = NoOp 
+  | Sort 
+  | Delete Int
 
 update action model =
   case action of
     NoOp ->
       model
+
     Sort ->
       -- List.sortBy sorts the model.entries list by
       -- it's "points" property
       -- We can achieve the same result using an anonymous function like so:
       -- List.sortBy (\entry -> entry.points) model.entries
       { model | entries = List.sortBy .points model.entries }
+
+    Delete id ->
+      let
+          remainingEntries =
+            List.filter (\entry -> entry.id /= id) model.entries
+      in
+        { model | entries = remainingEntries }
+
 
 -- Define our title function
 -- We call the Html.text function and pass in an argument of "Hello, World!"
@@ -83,20 +96,24 @@ pageFooter =
     ]
 
 -- entryItem : newEntry -> Html.Html
-entryItem entry =
+entryItem address entry =
   li [ ]
     [ span [ class "phrase" ] [ text entry.phrase ]
     , span [ class "points" ] [ text (toString entry.points) ]
+    , button [ class "delete", onClick address (Delete entry.id) ] [ ]
     ]
 
-entryList entries =
-  ul []
-    (List.map entryItem entries)
+entryList address entries =
+  let
+    entryItems = List.map (entryItem address) entries
+  in
+    ul [ ] entryItems
 
-view model =
+view address model =
   div [ id "container" ]
     [ pageHeader
-    , entryList model.entries
+    , entryList address model.entries
+    , button [ class "sort", onClick address Sort ] [ text "Sort" ]
     , pageFooter
     ]
 
@@ -104,7 +121,12 @@ main =
   -- We can re-write this:
   -- view (update Sort initialModel)
   -- as this (using pipe operator):
-  initialModel
-    |> update Sort
-    |> view
+  -- initialModel
+  --   |> update Sort
+  --   |> view
+  StartApp.start
+    { model = initialModel
+    , view = view
+    , update = update
+    }
 

@@ -9,11 +9,10 @@ Elm.Repl.make = function (_elm) {
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
+   $Signal = Elm.Signal.make(_elm),
+   $StartApp = Elm.StartApp.make(_elm);
    var _op = {};
    var tsol = {ctor: "_Tuple0"};
-   var entry = {phrase: "Future-Proof",points: 100,wasSpoken: false,id: 1};
-   var deltron3030 = entry.points;
-   var clonedEntry = _U.update(entry,{points: 500});
-   return _elm.Repl.values = {_op: _op,clonedEntry: clonedEntry,deltron3030: deltron3030,entry: entry,tsol: tsol};
+   var deltron3030 = $StartApp.Config;
+   return _elm.Repl.values = {_op: _op,deltron3030: deltron3030,tsol: tsol};
 };
