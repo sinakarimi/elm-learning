@@ -36,10 +36,11 @@ initialModel =
 
 -- Define a type called Action which has 2 possible values
 -- NoOp or Sort. This acts similar to an enumerated type.
-type Action 
-  = NoOp 
-  | Sort 
+type Action
+  = NoOp
+  | Sort
   | Delete Int
+  | Mark Int
 
 update action model =
   case action of
@@ -59,7 +60,12 @@ update action model =
             List.filter (\entry -> entry.id /= id) model.entries
       in
         { model | entries = remainingEntries }
-
+    Mark id ->
+      let
+        updateEntry e =
+          if e.id == id then { e | wasSpoken = (not e.wasSpoken) } else e
+      in
+        { model | entries = List.map updateEntry model.entries }
 
 -- Define our title function
 -- We call the Html.text function and pass in an argument of "Hello, World!"
@@ -97,7 +103,10 @@ pageFooter =
 
 -- entryItem : newEntry -> Html.Html
 entryItem address entry =
-  li [ ]
+  li
+    [ classList [ ("highlight", entry.wasSpoken) ]
+    , onClick address (Mark entry.id)
+    ]
     [ span [ class "phrase" ] [ text entry.phrase ]
     , span [ class "points" ] [ text (toString entry.points) ]
     , button [ class "delete", onClick address (Delete entry.id) ] [ ]
