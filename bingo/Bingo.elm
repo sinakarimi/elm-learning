@@ -26,7 +26,7 @@ newEntry phrase points id =
   }
 
 initialModel =
-  { entries = 
+  { entries =
       [ newEntry "Doing Agile" 200 2
       , newEntry "In the Cloud" 300 3
       , newEntry "Future-Proof" 100 1
@@ -63,6 +63,7 @@ update action model =
     Mark id ->
       let
         updateEntry e =
+          -- The not operator acts as a conditional here, similar to "!"
           if e.id == id then { e | wasSpoken = (not e.wasSpoken) } else e
       in
         { model | entries = List.map updateEntry model.entries }
